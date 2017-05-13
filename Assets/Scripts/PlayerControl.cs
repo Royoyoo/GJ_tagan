@@ -26,7 +26,8 @@ public class PlayerControl : MonoBehaviour {
 
 	public List<EnemyControl> enemyNear;
 
-	public float moveTimer;
+	public float moveFeetsPaintTimer, moveObjectsPaintTimer, movePaintInterval;
+
 	public float enemyReactInterval;
 	float lastEnemyReact;
 
@@ -66,8 +67,8 @@ public class PlayerControl : MonoBehaviour {
 			RaycastHit dropHit;
 			if (Physics.Raycast (rayDrop, out dropHit, 5f, 1 << 11))
 			{
-				mud--;
-				score += 2;
+				mud -= 0.5f;
+				score += 1;
 				lastMudDrop = Time.time;
 				Debug.Log ("Drop_ok");
 			}
@@ -91,7 +92,8 @@ public class PlayerControl : MonoBehaviour {
 		if (V != 0 || H != 0)
 		{
 			anim.SetBool ("isWalking", true);
-			moveTimer += Time.deltaTime;
+			moveFeetsPaintTimer += Time.deltaTime;
+			moveObjectsPaintTimer += Time.deltaTime;
 		}
 		else
 			anim.SetBool ("isWalking", false);

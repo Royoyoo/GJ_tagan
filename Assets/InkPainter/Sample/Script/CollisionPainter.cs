@@ -33,9 +33,9 @@ namespace Es.InkPainter.Sample
 				return;
 			numberUpdatesToSkip = 0;
 
-			if (GameController.instance.playerScript.moveTimer < movePaintIntervals)
+			if (GameController.instance.playerScript.moveObjectsPaintTimer < movePaintIntervals)
 				return;
-			GameController.instance.playerScript.moveTimer = 0;
+			GameController.instance.playerScript.moveObjectsPaintTimer = 0;
 
 
 			Debug.Log (collision.contacts.Length);

@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 54717858956252220}
   - component: {fileID: 23322407720354352}
   - component: {fileID: 114042384225965752}
+  - component: {fileID: 114452925688758794}
   m_Layer: 13
   m_Name: ObjectsPainter
   m_TagString: Untagged
@@ -660,7 +661,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1902378177723450}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1259da91c24a6d34ba000c2454d018a4, type: 3}
   m_Name: 
@@ -760,6 +761,18 @@ MonoBehaviour:
     normalBlendType: 0
     heightBlendType: 0
   wait: 2
+--- !u!114 &114452925688758794
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1902378177723450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ac023f0649805142ab76870ad1d8c19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerScript: {fileID: 0}
 --- !u!114 &114735976027977460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -778,13 +791,13 @@ MonoBehaviour:
   throwStrength: 50
   enemyNear: []
   moveTimer: 0
+  lastPaintTime: 0
+  movePaintInterval: 0.5
   enemyReactInterval: 0.5
-  lastEnemyReact: 0
   anim: {fileID: 95621211246059670}
   score: 0
   mud: 0
   mudDropInterval: 0.25
-  lastMudDrop: 0
 --- !u!136 &136190634897295464
 CapsuleCollider:
   m_ObjectHideFlags: 1
