@@ -18,6 +18,9 @@ public class PlayerControl : MonoBehaviour {
 
 	public bool isHolding;
 	public bool isNearShop;
+
+	public float threat;
+
 	public float stamina, maxStamina;
 	public float speed, speedMultiplier;
 	public float throwStrength;
@@ -25,7 +28,10 @@ public class PlayerControl : MonoBehaviour {
 	public List<Weapon> weaponList;
 	public Weapon currentWeapon;
 
+	public List<EnemyControl> enemyNear;
+
 	public float moveTimer;
+	public float enemyReactInterval, lastEnemyReact;
 
 	public Animator anim;
 
@@ -36,6 +42,7 @@ public class PlayerControl : MonoBehaviour {
 	float targetDistance;
 
 	void Start () {
+		lastEnemyReact = Time.time;
 		isHolding = false;
 		isNearShop = false;
 		currentWeapon = weaponList [0];
@@ -51,6 +58,18 @@ public class PlayerControl : MonoBehaviour {
 //		lookVector.y = transform.position.y;
 //		transform.LookAt (lookVector);
 
+		// Enemies reacts if threat is high
+		if (threat > 0.1f && Time.time > lastEnemyReact + enemyReactInterval)
+		{
+			foreach (EnemyControl EC in enemyNear)
+			{
+				EC.ReactToPlayer (threat);
+			}
+
+			lastEnemyReact = Time.time;
+		}
+
+		//camera sensitivity
 		transform.eulerAngles += new Vector3(0f, Input.GetAxis("Mouse X") * 5f, 0f);
 
 		if (Input.GetAxis ("Vertical") != 0)
@@ -63,7 +82,7 @@ public class PlayerControl : MonoBehaviour {
 		if (Input.GetAxis ("Vertical") != 0 || Input.GetAxis ("Horizontal") != 0)
 		{
 			anim.SetBool ("isWalking", true);
-			moveTimer += Time.time;
+			moveTimer += Time.deltaTime;
 		}
 		else
 			anim.SetBool ("isWalking", false);
@@ -101,7 +120,7 @@ public class PlayerControl : MonoBehaviour {
 			enemyControl = grabHit.collider.gameObject.GetComponent<EnemyControl> ();
 			if (enemyControl != null)
 			{
-				enemyControl.isGrabbed = true;
+				//enemyControl.isGrabbed = true;
 				enemyControl.transform.SetParent (this.transform);
 				isHolding = true;
 			}
@@ -113,7 +132,7 @@ public class PlayerControl : MonoBehaviour {
 		isHolding = false;
 		enemyControl.transform.parent = null;
 		enemyControl.GetComponent<Rigidbody> ().AddForce (transform.forward * throwStrength, ForceMode.Impulse);
-		enemyControl.isGrabbed = false;
+		//enemyControl.isGrabbed = false;
 		enemyControl = null;
 	}
 
@@ -121,7 +140,7 @@ public class PlayerControl : MonoBehaviour {
 	{
 		isHolding = false;
 		enemyControl.transform.parent = null;
-		enemyControl.isGrabbed = false;
+		//enemyControl.isGrabbed = false;
 		enemyControl = null;
 	}
 

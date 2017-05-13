@@ -10,12 +10,14 @@ public class EnemySight : MonoBehaviour {
 	void OnTriggerEnter(Collider col)
 	{
 		if (col.tag == "Player")
-			thisEnemyControl.isChasing = true;
+			GameController.instance.playerScript.enemyNear.Add (thisEnemyControl);
+			//thisEnemyControl.isChasing = true;
 	}
 
 	void OnTriggerExit(Collider col)
 	{
 		if (col.tag == "Player")
-			thisEnemyControl.isChasing = false;
+			GameController.instance.playerScript.enemyNear.Remove (thisEnemyControl);
+			//thisEnemyControl.isChasing = false;
 	}
 }

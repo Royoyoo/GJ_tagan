@@ -8,29 +8,28 @@ public enum reactionType {OFFENCE, SCARED, NEUTRAL};
 public class EnemyControl : MonoBehaviour {
 
 	public bool isChasing;
-	public bool isGrabbed;
 	public NavMeshAgent thisAgent;
 	public reactionType reaction;
+
+	public PlayerControl playerScript;
 
 	public float moveTime, moveInterval;
 
 
 	void Start () {
 		thisAgent = GetComponent<NavMeshAgent> ();
+		playerScript = GameController.instance.playerScript;
+
 		isChasing = false;
-		isGrabbed = false;
 		moveTime = Time.time;
 	}
 
 	void Update () {
-		if (!isGrabbed)
-		{
-			thisAgent.isStopped = false;	//???
-
+		
 			//Free and see player
 			if (isChasing)
 			{
-				ReactToPlayer ();
+				ReactToPlayer (playerScript.threat);
 			}
 			//Free movement
 			else
@@ -42,21 +41,22 @@ public class EnemyControl : MonoBehaviour {
 				}
 			}
 		}
-		//Grabbed
-		else
-			thisAgent.isStopped = true;
-	}
 
-	void ReactToPlayer ()
+	public void ReactToPlayer (float playerThreat)
 	{
+		if (playerThreat > 0.45f)
+			reaction = reactionType.OFFENCE;
+		else
+			reaction = reactionType.SCARED;
+
 		switch(reaction)
 		{
 			case reactionType.OFFENCE:
-				thisAgent.destination = GameController.instance.playerGO.transform.position;
+				thisAgent.destination = playerScript.transform.position;
 				break;
 
 			case reactionType.SCARED:
-				thisAgent.destination = transform.position + (transform.position - GameController.instance.playerGO.transform.position).normalized * 5f;
+				thisAgent.destination = transform.position + (transform.position - playerScript.transform.position).normalized * 5f;
 				//TODO: Stop agent, test few points for remainingDistance, reset and go for longest;
 				break;
 

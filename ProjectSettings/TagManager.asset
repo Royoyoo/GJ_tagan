@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Location
   - Enemy
+  - Bonus
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - 
   - Mud+
   - Mud-
-  - Bonus
+  - 
   - 
   - 
   - 
