@@ -2,62 +2,51 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class Weapon {
-	public float maxTargetDistance;
-	public int aimingType;
-	public float aimLoopTime;
-	public int ammoCount;
-	public int maxAmmo;
-	public GameObject aimPrefab;
-	public GameObject projectilePrefab;
-}
-
+//[System.Serializable]
+//public class Weapon {
+//	public float maxTargetDistance;
+//	public int aimingType;
+//	public float aimLoopTime;
+//	public int ammoCount;
+//	public int maxAmmo;
+//	public GameObject aimPrefab;
+//	public GameObject projectilePrefab;
+//}
 
 public class PlayerControl : MonoBehaviour {
 
 	public bool isHolding;
-	public bool isNearShop;
 
 	public float threat;
 
-	public float stamina, maxStamina;
+	//public float stamina, maxStamina;
 	public float speed, speedMultiplier;
 	public float throwStrength;
 	//public Vector3 lookVector;
-	public List<Weapon> weaponList;
-	public Weapon currentWeapon;
 
 	public List<EnemyControl> enemyNear;
 
 	public float moveTimer;
-	public float enemyReactInterval, lastEnemyReact;
+	public float enemyReactInterval;
+	float lastEnemyReact;
 
 	public Animator anim;
 
-	public int score;
+	public float score;
+	public float mud;
+	public float mudDropInterval;
+	float lastMudDrop;
 
 	EnemyControl enemyControl;
 
-	float targetDistance;
-
 	void Start () {
 		lastEnemyReact = Time.time;
+		lastMudDrop = Time.time;
 		isHolding = false;
-		isNearShop = false;
-		currentWeapon = weaponList [0];
 	}
 	
 	void Update () {
 		
-//		Ray lookRay = Camera.main.ScreenPointToRay (Input.mousePosition);
-//		RaycastHit lookHit;
-//		Physics.Raycast (lookRay, out lookHit, 1000f);
-//		lookVector = lookHit.point;
-//
-//		lookVector.y = transform.position.y;
-//		transform.LookAt (lookVector);
-
 		// Enemies reacts if threat is high
 		if (threat > 0.1f && Time.time > lastEnemyReact + enemyReactInterval)
 		{
@@ -69,33 +58,43 @@ public class PlayerControl : MonoBehaviour {
 			lastEnemyReact = Time.time;
 		}
 
+		// Mud Drop Routine
+		if (mud > 0 && Time.time > lastMudDrop + mudDropInterval)
+		{
+			Debug.Log ("Drop");
+			Ray rayDrop = new Ray (transform.position, Vector3.down);
+			RaycastHit dropHit;
+			if (Physics.Raycast (rayDrop, out dropHit, 5f, 1 << 11))
+			{
+				mud--;
+				score += 2;
+				lastMudDrop = Time.time;
+				Debug.Log ("Drop_ok");
+			}
+
+
+			lastMudDrop = Time.time;
+		}
+
 		//camera sensitivity
 		transform.eulerAngles += new Vector3(0f, Input.GetAxis("Mouse X") * 5f, 0f);
 
-		if (Input.GetAxis ("Vertical") != 0)
-			transform.Translate (transform.forward * speed * Input.GetAxis ("Vertical") * Time.deltaTime, Space.World);
+		float V = Input.GetAxis ("Vertical");
+		float H = Input.GetAxis ("Horizontal");
 
-		if (Input.GetAxis ("Horizontal") != 0)
-			transform.Translate (transform.right * speed * Input.GetAxis ("Horizontal") * Time.deltaTime, Space.World);
+		if (V != 0)
+			transform.Translate (transform.forward * speed * V * Time.deltaTime, Space.World);
 
-		//!!!!!!!!!!Redo
-		if (Input.GetAxis ("Vertical") != 0 || Input.GetAxis ("Horizontal") != 0)
+		if (H != 0)
+			transform.Translate (transform.right * speed * H * Time.deltaTime, Space.World);
+
+		if (V != 0 || H != 0)
 		{
 			anim.SetBool ("isWalking", true);
 			moveTimer += Time.deltaTime;
 		}
 		else
 			anim.SetBool ("isWalking", false);
-
-		//Use weapon or Throw
-		if (Input.GetMouseButtonDown (0))
-		{
-			if (!isHolding && currentWeapon.ammoCount > 0)
-				StartCoroutine ("Aim");
-			else
-				if(isHolding)
-					Throw();
-		}
 
 		//Try to grab or drop smth
 		if (Input.GetMouseButtonDown (1))
@@ -104,8 +103,14 @@ public class PlayerControl : MonoBehaviour {
 				Grab();
 			else
 				Drop();
+				//Throw();
 		}
-			
+	}
+
+	public void AddMud(MudSource mudSource)
+	{
+		mud += mudSource.mudAmmount;
+		score += mudSource.scoreAmmount;
 	}
 
 	void Grab()
@@ -132,7 +137,6 @@ public class PlayerControl : MonoBehaviour {
 		isHolding = false;
 		enemyControl.transform.parent = null;
 		enemyControl.GetComponent<Rigidbody> ().AddForce (transform.forward * throwStrength, ForceMode.Impulse);
-		//enemyControl.isGrabbed = false;
 		enemyControl = null;
 	}
 
@@ -140,78 +144,6 @@ public class PlayerControl : MonoBehaviour {
 	{
 		isHolding = false;
 		enemyControl.transform.parent = null;
-		//enemyControl.isGrabbed = false;
 		enemyControl = null;
 	}
-
-	IEnumerator Aim()
-	{
-		anim.SetTrigger ("Aim");
-
-		switch(currentWeapon.aimingType)
-		{
-			case 1:
-				float t = 0;
-				float dir = 1;
-
-				GameObject aimGO = Instantiate (currentWeapon.aimPrefab, transform.position, transform.localRotation);
-
-				while (!Input.GetMouseButtonUp (0))
-				{
-					if (Input.GetMouseButtonDown (1)) {
-						Destroy (aimGO);
-						yield break;
-					}
-
-					t += dir * Time.deltaTime / currentWeapon.aimLoopTime;
-
-					if (t > 1 || t < 0)
-						dir = -dir;
-				
-					aimGO.transform.position = Vector3.Lerp (transform.position, transform.position + transform.forward * currentWeapon.maxTargetDistance, t);
-					yield return null;
-
-				}
-
-				Shoot (aimGO.transform.position);
-				Destroy (aimGO);
-				break;
-
-
-			default :
-				Shoot (transform.position + transform.forward.normalized);
-				break;
-		}
-	}
-
-	void Shoot(Vector3 pos)
-	{
-		anim.SetTrigger ("Throw");
-
-		GameObject proj;
-		currentWeapon.ammoCount--;
-
-		switch(currentWeapon.aimingType)
-		{
-			case 1:				
-				proj = Instantiate (currentWeapon.projectilePrefab, transform.position, transform.localRotation);
-				proj.GetComponent<ProjectileControl> ().targetPos = pos;
-				break;
-
-
-			default:
-				proj = Instantiate (currentWeapon.projectilePrefab, pos, transform.localRotation);
-				break;
-		}
-	}
-
-	public void AddAmmo()
-	{
-		foreach (Weapon w in weaponList)
-		{
-			if (w.ammoCount < w.maxAmmo)
-				w.ammoCount++;
-		}
-	}
-
 }

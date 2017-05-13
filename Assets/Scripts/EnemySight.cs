@@ -17,7 +17,9 @@ public class EnemySight : MonoBehaviour {
 	void OnTriggerExit(Collider col)
 	{
 		if (col.tag == "Player")
+		{
 			GameController.instance.playerScript.enemyNear.Remove (thisEnemyControl);
-			//thisEnemyControl.isChasing = false;
+			thisEnemyControl.reaction = reactionType.NEUTRAL;
+		}
 	}
 }

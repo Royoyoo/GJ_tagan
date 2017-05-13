@@ -27,7 +27,7 @@ public class EnemyControl : MonoBehaviour {
 	void Update () {
 		
 			//Free and see player
-			if (isChasing)
+		if (reaction != reactionType.NEUTRAL)
 			{
 				ReactToPlayer (playerScript.threat);
 			}
