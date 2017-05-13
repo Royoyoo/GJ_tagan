@@ -206,6 +206,7 @@ GameObject:
   - component: {fileID: 23816342152628618}
   - component: {fileID: 114878367997305004}
   - component: {fileID: 54617529595225248}
+  - component: {fileID: 114387320451802580}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -486,7 +487,7 @@ Animator:
   m_GameObject: {fileID: 1481821366160186}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 093895a043c1dc448bfd852afb968120, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e0475229483548489fe6bccfa3eff79, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -494,6 +495,59 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114387320451802580
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1848325445734664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1259da91c24a6d34ba000c2454d018a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brushColors:
+    serializedVersion: 2
+    key0: {r: 1, g: 0, b: 0, a: 1}
+    key1: {r: 0.9862069, g: 1, b: 0, a: 1}
+    key2: {r: 0, g: 1, b: 0.25517225, a: 0}
+    key3: {r: 0, g: 0.33793116, b: 1, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 18119
+    ctime2: 38165
+    ctime3: 65535
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 4
+    m_NumAlphaKeys: 2
+  movePaintIntervals: 0.5
+  brush:
+    brushTexture: {fileID: 2800000, guid: b8702b5a8624a114f82a6d09bc3ce746, type: 3}
+    brushNormalTexture: {fileID: 0}
+    brushHeightTexture: {fileID: 0}
+    brushScale: 0.053
+    brushNormalBlend: 0.158
+    brushHeightBlend: 0.195
+    brushColor: {r: 1, g: 0, b: 0, a: 1}
+    colorBlendType: 0
+    normalBlendType: 0
+    heightBlendType: 0
+  wait: 3
 --- !u!114 &114878367997305004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -541,6 +595,7 @@ MonoBehaviour:
       type: 2}
     projectilePrefab: {fileID: 1525792612068630, guid: 61ac857be73a4634cac6439cd2fee5f3,
       type: 2}
+  moveTimer: 0
   anim: {fileID: 95535796283686852}
   score: 0
 --- !u!136 &136444329723633136

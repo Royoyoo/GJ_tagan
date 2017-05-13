@@ -25,6 +25,8 @@ public class PlayerControl : MonoBehaviour {
 	public List<Weapon> weaponList;
 	public Weapon currentWeapon;
 
+	public float moveTimer;
+
 	public Animator anim;
 
 	public int score;
@@ -59,7 +61,10 @@ public class PlayerControl : MonoBehaviour {
 
 		//!!!!!!!!!!Redo
 		if (Input.GetAxis ("Vertical") != 0 || Input.GetAxis ("Horizontal") != 0)
+		{
 			anim.SetBool ("isWalking", true);
+			moveTimer += Time.time;
+		}
 		else
 			anim.SetBool ("isWalking", false);
 
