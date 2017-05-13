@@ -6,6 +6,10 @@ public class CollisionsSplatter : MonoBehaviour {
 
 	public PlayerControl playerScript;
 
+	public GameObject TestPrefab;
+
+	List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
+
 	void Start()
 	{
 		playerScript = GameController.instance.playerScript;
@@ -13,7 +17,7 @@ public class CollisionsSplatter : MonoBehaviour {
 
 	void OnCollisionStay(Collision collision)
 	{
-		if (playerScript.moveObjectsPaintTimer < playerScript.movePaintInterval || playerScript.mud < 0)
+		if (playerScript.moveObjectsPaintTimer < playerScript.movePaintInterval || playerScript.mud <= 0)
 			return;
 		
 		playerScript.moveObjectsPaintTimer = 0;
@@ -26,13 +30,21 @@ public class CollisionsSplatter : MonoBehaviour {
 			if (playerScript.mud < 0)
 				break;
 			//p.otherCollider.tag;
-//			if (p.otherCollider != null)
-//			{
-//				brush.Color = brushColors.Evaluate (Random.Range(0f,1f));
-//				brush.Scale = Random.Range (0.01f, 0.1f) * canvas.UVScale;
-//				canvas.Paint (brush, p.point);
-//				//Debug.Log ("Painted");
-//			}
+			if (p.otherCollider != null)
+			{
+				//HandsPS.transform.position = p.point;
+
+				Ray ray = new Ray (transform.position, (p.point - transform.position).normalized);
+				RaycastHit outHit;
+				if (Physics.Raycast (ray, out outHit, 5f, 1 << 14))
+				{
+					Debug.DrawRay (p.point, outHit.normal);
+					Instantiate(TestPrefab, p.point, Quaternion.LookRotation (outHit.normal));
+				}
+			}
 		}
 	}
 }
+
+
+

@@ -11,9 +11,12 @@ public class EnemyControl : MonoBehaviour {
 	public NavMeshAgent thisAgent;
 	public reactionType reaction;
 
+	public Animator anim;
+
 	public PlayerControl playerScript;
 
-	public float moveTime, moveInterval;
+	public float randomMoveTime, randomMoveInterval;
+	public float lastCatchTime, catchInterval;
 
 
 	void Start () {
@@ -21,23 +24,37 @@ public class EnemyControl : MonoBehaviour {
 		playerScript = GameController.instance.playerScript;
 
 		isChasing = false;
-		moveTime = Time.time;
+		randomMoveTime = Time.time;
+		lastCatchTime = Time.time;
 	}
 
 	void Update () {
-		
+
+		if (Vector3.Distance(transform.position, playerScript.transform.position) < .75f && Time.time > lastCatchTime + catchInterval)
+		{
+			anim.SetFloat ("Speed", 0f);
+			anim.SetTrigger ("Catch");
+			lastCatchTime = Time.time;
+		}
+
 			//Free and see player
-		if (reaction != reactionType.NEUTRAL)
+			if (reaction != reactionType.NEUTRAL)
 			{
-				ReactToPlayer (playerScript.threat);
+			thisAgent.speed = 5f;
+			anim.SetFloat ("Speed", thisAgent.velocity.magnitude/5);
+
+				//ReactToPlayer (playerScript.threat);
 			}
 			//Free movement
 			else
 			{
-				if (Time.time > moveTime + moveInterval)
+			thisAgent.speed = 2f;
+			anim.SetFloat ("Speed", thisAgent.velocity.magnitude/5);
+
+				if (Time.time > randomMoveTime + randomMoveInterval)
 				{
 					thisAgent.destination = new Vector3 (Random.Range (-15f, 15f), 0f, Random.Range (-15f, 15f));
-					moveTime = Time.time;
+					randomMoveTime = Time.time;
 				}
 			}
 		}
@@ -63,5 +80,15 @@ public class EnemyControl : MonoBehaviour {
 			default:
 				break;
 		}
+	}
+
+	public void TryCatch()
+	{
+		Debug.Log ("!!!");
+		if (Vector3.Distance (transform.position, playerScript.transform.position) < 0.7f && Vector3.Dot (transform.forward, -transform.position + playerScript.transform.position) > 0.5f)
+			Debug.Log ("Caught");
+		else
+			Debug.Log(Vector3.Distance (transform.position, playerScript.transform.position).ToString() + "   "
+				+ Vector3.Dot (transform.forward, -transform.position + playerScript.transform.position).ToString());
 	}
 }

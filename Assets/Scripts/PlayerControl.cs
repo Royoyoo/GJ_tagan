@@ -33,6 +33,8 @@ public class PlayerControl : MonoBehaviour {
 
 	public Animator anim;
 
+	public ParticleSystem DropsPS;
+
 	public float score;
 	public float mud;
 	public float mudDropInterval;
@@ -47,7 +49,9 @@ public class PlayerControl : MonoBehaviour {
 	}
 	
 	void Update () {
-		
+
+		threat = mud / 50f;
+
 		// Enemies reacts if threat is high
 		if (threat > 0.1f && Time.time > lastEnemyReact + enemyReactInterval)
 		{
@@ -62,18 +66,17 @@ public class PlayerControl : MonoBehaviour {
 		// Mud Drop Routine
 		if (mud > 0 && Time.time > lastMudDrop + mudDropInterval)
 		{
-			Debug.Log ("Drop");
+			//Debug.Log ("Drop");
 			Ray rayDrop = new Ray (transform.position, Vector3.down);
 			RaycastHit dropHit;
 			if (Physics.Raycast (rayDrop, out dropHit, 5f, 1 << 11))
 			{
 				mud -= 0.5f;
 				score += 1;
+				DropsPS.Play ();
 				lastMudDrop = Time.time;
-				Debug.Log ("Drop_ok");
+				//Debug.Log ("Drop_ok");
 			}
-
-
 			lastMudDrop = Time.time;
 		}
 
@@ -91,12 +94,12 @@ public class PlayerControl : MonoBehaviour {
 
 		if (V != 0 || H != 0)
 		{
-			anim.SetBool ("isWalking", true);
+			anim.SetBool ("isRunning", true);
 			moveFeetsPaintTimer += Time.deltaTime;
 			moveObjectsPaintTimer += Time.deltaTime;
 		}
 		else
-			anim.SetBool ("isWalking", false);
+			anim.SetBool ("isRunning", false);
 
 		//Try to grab or drop smth
 		if (Input.GetMouseButtonDown (1))
@@ -117,7 +120,7 @@ public class PlayerControl : MonoBehaviour {
 
 	void Grab()
 	{
-		anim.SetTrigger ("Melee");
+		//anim.SetTrigger ("Melee");
 
 		Ray grabRay = new Ray (transform.position, transform.forward);
 		RaycastHit grabHit;

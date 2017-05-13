@@ -8,6 +8,9 @@ namespace Es.InkPainter.Sample
 		public Gradient brushColors;
 		public float movePaintIntervals;
 
+		//public GameObject TestPrefab;
+		public ParticleSystem SplatDropPS;
+
 		[SerializeField]
 		private Brush brush = null;
 
@@ -33,7 +36,7 @@ namespace Es.InkPainter.Sample
 				return;
 			numberUpdatesToSkip = 0;
 
-			if (GameController.instance.playerScript.moveObjectsPaintTimer < movePaintIntervals)
+			if (GameController.instance.playerScript.moveObjectsPaintTimer < movePaintIntervals || GameController.instance.playerScript.mud <= 0)
 				return;
 			GameController.instance.playerScript.moveObjectsPaintTimer = 0;
 
@@ -50,6 +53,17 @@ namespace Es.InkPainter.Sample
 					brush.Scale = Random.Range (0.01f, 0.1f) * canvas.UVScale;
 					canvas.Paint (brush, p.point);
 					//Debug.Log ("Painted");
+
+					SplatDropPS.transform.position = p.point;
+					SplatDropPS.Emit (3);
+
+//					Ray ray = new Ray (transform.position, (p.point - transform.position).normalized);
+//					RaycastHit outHit;
+//					if (Physics.Raycast (ray, out outHit, 5f, 1 << 14))
+//					{
+//						Debug.DrawRay (p.point, outHit.normal);
+//						Instantiate(TestPrefab, p.point, Quaternion.LookRotation (outHit.normal));
+//					}
 				}
 			}
 		}
